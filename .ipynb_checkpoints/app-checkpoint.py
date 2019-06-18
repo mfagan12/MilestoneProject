@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect
+import pandas as pd
 from bokeh.plotting import figure,show
-
+from bokeh.resources import CDN
+from bokeh.embed import file_html
 
 app = Flask(__name__)
 
@@ -25,11 +27,11 @@ def retrieve_prices(ticker, option = 'compact'):
     
     return data
 
-def make_plot(data)
+def make_plot(data):
     p = figure(plot_width = 500, 
                plot_height = 300, 
                x_axis_type = 'datetime', 
-               title = company + ' closing stock price')
+               title = 'FB' + ' closing stock price')
     p.xaxis.axis_label = 'Date'
     p.yaxis.axis_label = 'Price'
     p.line(data['date'], data['close'])
@@ -37,7 +39,10 @@ def make_plot(data)
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    data = retrieve_prices('FB', option = 'compact')
+    p = make_plot(data)
+    return file_html(p, CDN, 'Share price')
+    # return render_template('index.html')
 
 @app.route('/about')
 def about():
