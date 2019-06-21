@@ -39,10 +39,10 @@ def make_plot(data):
 
 @app.route('/')
 def index():
-    data = retrieve_prices('FB', option = 'compact')
-    p = make_plot(data)
-    return file_html(p, CDN, 'Share price')
-    # return render_template('index.html')
+#     data = retrieve_prices('FB', option = 'compact')
+#     p = make_plot(data)
+#     return file_html(p, CDN, 'Share price')
+    return render_template('myindex.html')
 
 @app.route('/about')
 def about():
