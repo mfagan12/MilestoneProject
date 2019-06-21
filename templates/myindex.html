@@ -1,7 +1,16 @@
+<style>
+    .page {
+        font-family: 'Source Sans Pro';
+        margin: auto;
+        max-width: 500px;
+    }
+</style>
+
 <html>
   <head>
     <link rel="stylesheet" href="http://cdn.pydata.org/bokeh/release/bokeh-1.2.0.min.css" type="text/css" />
     <script type="text/javascript" src="http://cdn.pydata.org/bokeh/release/bokeh-1.2.0.min.js"></script>
+    <link href='https://fonts.googleapis.com/css?family=Source Sans Pro' rel='stylesheet'>
   </head>
   <body>
     <div class=page>
@@ -17,6 +26,10 @@
                 {% endif %}
             {% endfor %}
         </select>
+<!--         <select name='full'>
+            <input type="checkbox" name="full-view?"/>
+            </select> -->
+        
         <input type="submit">
         </form>
         

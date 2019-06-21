@@ -42,11 +42,18 @@ def make_plot(data, company):
 @app.route('/')
 def index():
     current_company = request.args.get('company')
+#     full = request.args.get('full')
+    full = False
+    
     if current_company == None:
         current_company = 'AAPL'
     
-    data = retrieve_prices(current_company, option = 'compact')
+    if full:
+        data = retrieve_prices(current_company, option = 'full')
+    else:
+        data = retrieve_prices(current_company, option = 'compact')
     script, div = make_plot(data, current_company)
+    
     return render_template('myindex.html', script = script, div = div,
                           companies = companies, current_company = current_company)
 
