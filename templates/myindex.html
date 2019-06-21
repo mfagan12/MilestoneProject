@@ -1,5 +1,28 @@
 <html>
-    <body>
-        Test
-    </body>
+  <head>
+    <link rel="stylesheet" href="http://cdn.pydata.org/bokeh/release/bokeh-1.2.0.min.css" type="text/css" />
+    <script type="text/javascript" src="http://cdn.pydata.org/bokeh/release/bokeh-1.2.0.min.js"></script>
+  </head>
+  <body>
+    <div class=page>
+      <h1>Closing stock prices</h1>
+        
+        <form action="/">
+        <select name="company">
+            {% for company in companies %}
+                {% if company == current_company %}
+                    <option selected value="{{ company }}">{{ company }}</option> 
+                {% else %} 
+                    <option value="{{ company }}">{{ company }}</option> 
+                {% endif %}
+            {% endfor %}
+        </select>
+        <input type="submit">
+        </form>
+        
+        Data from Alpha Vantage API
+        {{ script | safe }}
+        {{ div | safe }}
+    </div>
+  </body>
 </html>

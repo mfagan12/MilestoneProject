@@ -2,10 +2,11 @@ from flask import Flask, render_template, request, redirect
 import pandas as pd
 from bokeh.plotting import figure,show
 from bokeh.resources import CDN
-from bokeh.embed import file_html
+from bokeh.embed import file_html, components
 
 app = Flask(__name__)
 
+companies = ['AAPL', 'AMZN', 'FB', 'GOOGL', 'NFLX']
 def retrieve_prices(ticker, option = 'compact'):
     '''Makes an API call to Alpha Vantage to get closing stock price data.
     Input:  ticker - string - stock identifier e.g. 'AAPL' for Apple stock
@@ -27,26 +28,31 @@ def retrieve_prices(ticker, option = 'compact'):
     
     return data
 
-def make_plot(data):
-    p = figure(plot_width = 500, 
-               plot_height = 300, 
+def make_plot(data, company):
+    p = figure(#plot_width = 500, 
+               #plot_height = 300, 
                x_axis_type = 'datetime', 
-               title = 'FB' + ' closing stock price')
+               title = company + ' closing stock price')
     p.xaxis.axis_label = 'Date'
     p.yaxis.axis_label = 'Price'
     p.line(data['date'], data['close'])
-    return p
+    script, div = components(p)
+    return script, div
 
 @app.route('/')
 def index():
-#     data = retrieve_prices('FB', option = 'compact')
-#     p = make_plot(data)
-#     return file_html(p, CDN, 'Share price')
-    return render_template('myindex.html')
+    current_company = request.args.get('company')
+    if current_company == None:
+        current_company = 'AAPL'
+    
+    data = retrieve_prices(current_company, option = 'compact')
+    script, div = make_plot(data, current_company)
+    return render_template('myindex.html', script = script, div = div,
+                          companies = companies, current_company = current_company)
 
 @app.route('/about')
 def about():
     return render_template('about.html')
 
 if __name__ == '__main__':
-    app.run(port=33507)
+    app.run(port=5000, debug=True)
