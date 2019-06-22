@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request
 import pandas as pd
 from bokeh.plotting import figure,show
 from bokeh.resources import CDN
@@ -7,6 +7,7 @@ from bokeh.embed import file_html, components
 app = Flask(__name__)
 
 companies = ['AAPL', 'AMZN', 'FB', 'GOOGL', 'NFLX']
+
 def retrieve_prices(ticker, option = 'compact'):
     '''Makes an API call to Alpha Vantage to get closing stock price data.
     Input:  ticker - string - stock identifier e.g. 'AAPL' for Apple stock
@@ -20,8 +21,7 @@ def retrieve_prices(ticker, option = 'compact'):
     + '&outputsize=' + option \
     + '&datatype=csv'
     
-    data = pd.read_csv(url)
-    data = data.drop(columns = ['open', 'high', 'low', 'volume'])
+    data = pd.read_csv(url, usecols=['timestamp', 'close'])
     
     data['timestamp'] = pd.to_datetime(data['timestamp'])
     data = data.rename({'timestamp' : 'date'}, axis = 'columns')
@@ -29,6 +29,12 @@ def retrieve_prices(ticker, option = 'compact'):
     return data
 
 def make_plot(data, company):
+    '''
+    Generate components of Bokeh plot to embed in page
+    Input: data - DataFrame - received from retrieve_prices call
+           company - string - ticker symbol of company you want to plot
+    
+    '''
     p = figure(#plot_width = 500, 
                #plot_height = 300, 
                x_axis_type = 'datetime', 
@@ -47,24 +53,24 @@ def make_plot(data, company):
 
 @app.route('/')
 def index():
+    # Get company and data size selections from template
     current_company = request.args.get('company')
     full = request.args.get('full')
     
+    # Set default company selection
     if current_company == None:
         current_company = 'AAPL'
     
+    # Make API call based on user selections and generate Bokeh components
     if full:
         data = retrieve_prices(current_company, option = 'full')
     else:
         data = retrieve_prices(current_company, option = 'compact')
     script, div = make_plot(data, current_company)
     
-    return render_template('myindex.html', script = script, div = div,
+    # Render template with Bokeh plot
+    return render_template('index.html', script = script, div = div,
                           companies = companies, current_company = current_company)
 
-@app.route('/about')
-def about():
-    return render_template('about.html')
-
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    app.run(port=5000)
