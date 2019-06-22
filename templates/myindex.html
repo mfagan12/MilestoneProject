@@ -1,8 +1,14 @@
 <style>
     .page {
+        background: #EEEEEE;
+        color:#454545;
         font-family: 'Source Sans Pro';
+        line-height: 1.6;
         margin: auto;
-        max-width: 500px;
+        max-width: 650px;
+    }
+    body {
+        background: #EEEEEE;
     }
 </style>
 
@@ -14,8 +20,9 @@
   </head>
   <body>
     <div class=page>
-      <h1>Closing stock prices</h1>
+        <h1>End-of-day company stock prices</h1>
         
+        Choose company:
         <form action="/">
         <select name="company">
             {% for company in companies %}
@@ -25,15 +32,14 @@
                     <option value="{{ company }}">{{ company }}</option> 
                 {% endif %}
             {% endfor %}
-        </select>
-<!--         <select name='full'>
-            <input type="checkbox" name="full-view?"/>
-            </select> -->
+        </select><br>
+
+        <input type="checkbox" name="full" value="True"> Show full price history? (Slower, default shows last 100 days)<br>
         
         <input type="submit">
         </form>
         
-        Data from Alpha Vantage API
+        Share price data from Alpha Vantage API
         {{ script | safe }}
         {{ div | safe }}
     </div>

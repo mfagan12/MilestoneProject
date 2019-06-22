@@ -35,6 +35,12 @@ def make_plot(data, company):
                title = company + ' closing stock price')
     p.xaxis.axis_label = 'Date'
     p.yaxis.axis_label = 'Price'
+    p.background_fill_alpha = 0
+    p.border_fill_alpha = 0
+    p.ygrid.grid_line_color = 'gray'
+    p.ygrid.grid_line_alpha = 0.3
+    p.xgrid.grid_line_color = 'gray'
+    p.xgrid.grid_line_alpha = 0.3
     p.line(data['date'], data['close'])
     script, div = components(p)
     return script, div
@@ -42,8 +48,7 @@ def make_plot(data, company):
 @app.route('/')
 def index():
     current_company = request.args.get('company')
-#     full = request.args.get('full')
-    full = False
+    full = request.args.get('full')
     
     if current_company == None:
         current_company = 'AAPL'
